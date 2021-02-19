@@ -1,0 +1,3 @@
+APK_PACKAGES=bash curl git openssl-dev wget
+APT_PACKAGES=bash curl git libssl-dev wget
+YUM_PACKAGES=bash curl git openssl-devel wget
