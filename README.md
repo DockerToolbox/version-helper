@@ -94,6 +94,8 @@ docker run --rm -v "${GRABBER_SCRIPT}":/version-grabber --env-file="${CONFIG_FIL
 
 This is a set of example output using the same [config file](config/config.example) but different operating systems, each time we let the tag default to latest.
 
+> If no version can be found then the package is omitted from the list.
+
 ### Alpine
 
 ```shell

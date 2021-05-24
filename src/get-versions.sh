@@ -25,8 +25,10 @@ PREREQ_COMMANDS=( "docker" )
 # A set of global flags that we use for configuration.                             #
 # -------------------------------------------------------------------------------- #
 
+NO_HEADERS=false
 USE_COLOURS=true                 # Should we use colours in our output ?
 WIDTH=120
+
 # -------------------------------------------------------------------------------- #
 # The wrapper function                                                             #
 # -------------------------------------------------------------------------------- #
@@ -56,8 +58,9 @@ function usage()
     fi
 
 cat <<EOF
-  Usage: $0 [ -h ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
+  Usage: $0 [ -h ] [ -p ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
     -h    : Print this screen
+    -p    : Package list only (No headers or other information)
     -c    : config file name (including path)
     -g    : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
     -o    : which operating system to use (docker container)
@@ -82,10 +85,13 @@ function process_arguments()
         usage
     fi
 
-    while getopts ":hc:g:o:s:t:" arg; do
+    while getopts ":hpc:g:o:s:t:" arg; do
         case $arg in
             h)
                 usage
+                ;;
+            p)
+                NO_HEADERS=true
                 ;;
             c)
                 CONFIG_FILE=$(realpath "${OPTARG}")
@@ -231,15 +237,18 @@ function show_success()
 
 function draw_header
 {
-    local config_string_raw config_string
-    config_string_raw="Config File: $(basename "${CONFIG_FILE}")  Grabber Script: $(basename "${GRABBER_SCRIPT}")  Docker Container: ${OSNAME}:${TAGNAME}  Shell: ${SHELLNAME}"
-    config_string="${green}Config File:${reset} $(basename "${CONFIG_FILE}")  ${green}Grabber Script:${reset} $(basename "${GRABBER_SCRIPT}")  ${green}Docker Container:${reset} ${OSNAME}:${TAGNAME}  ${green}Shell:${reset} ${SHELLNAME}"
+    if [[ "${NO_HEADERS}" = false ]]; then
 
-    draw_line
-    center_text "Docker package version grabber"
-    draw_line
-    center_text "${config_string}" "${#config_string_raw}"
-    draw_line
+        local config_string_raw config_string
+        config_string_raw="Config File: $(basename "${CONFIG_FILE}")  Grabber Script: $(basename "${GRABBER_SCRIPT}")  Docker Container: ${OSNAME}:${TAGNAME}  Shell: ${SHELLNAME}"
+        config_string="${green}Config File:${reset} $(basename "${CONFIG_FILE}")  ${green}Grabber Script:${reset} $(basename "${GRABBER_SCRIPT}")  ${green}Docker Container:${reset} ${OSNAME}:${TAGNAME}  ${green}Shell:${reset} ${SHELLNAME}"
+
+        draw_line
+        center_text "Docker package version grabber"
+        draw_line
+        center_text "${config_string}" "${#config_string_raw}"
+        draw_line
+    fi
 }
 
 # -------------------------------------------------------------------------------- #
@@ -281,13 +290,16 @@ function center_text()
 
 function draw_line()
 {
-    local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq'
+    if [[ "${NO_HEADERS}" = false ]]; then
 
-    while ((${#line} < "${WIDTH}"));
-    do
-        line+="$line";
-    done
-    printf '%s%s%s\n' "$start" "${line:0:WIDTH}" "$end"
+        local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq'
+
+        while ((${#line} < "${WIDTH}"));
+        do
+            line+="$line";
+        done
+        printf '%s%s%s\n' "$start" "${line:0:WIDTH}" "$end"
+    fi
 }
 
 
