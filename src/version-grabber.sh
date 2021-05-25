@@ -24,16 +24,16 @@ function get_apk_versions()
     if [[ -n "${packages}" ]]; then
         apk update > /dev/null 2>&1
 
-        output="RUN apk update && \\ \n"
-        output="${output}\\tapk add --no-cache \\ \n"
+        output="RUN apk update && \\\\\n"
+        output="${output}\\tapk add --no-cache \\\\\n"
 
         for package in $packages; do
             version=$(apk policy "${package}" 2>/dev/null | sed -n 2p | sed 's/:$//g' | sed 's/^[[:space:]]*//')
             if [[ -n "${version}" ]]; then
-                output="${output}\\t\t$package=$version \\ \n"
+                output="${output}\\t\t$package=$version \\\\\n"
             fi
         done
-        output=${output::-5}
+        output="${output}\t\t&& \\\\\n"
         echo -e "${output}"
     else
         echo " No packages have been defined."
@@ -54,16 +54,16 @@ function get_apt_versions()
     if [[ -n "${packages}" ]]; then
         apt-get update > /dev/null 2>&1
 
-        output="RUN apt-get update && \\ \n"
-        output="${output}\tapt-get -y --no-install-recommends install \\ \n"
+        output="RUN apt-get update && \\\\\n"
+        output="${output}\tapt-get -y --no-install-recommends install \\\\\n"
 
         for package in $packages; do
             version=$(apt-cache policy "${package}" 2>/dev/null | grep 'Candidate:' | awk -F ' ' '{print $2}')
             if [[ -n "${version}" ]]; then
-                output="${output}\t\t$package=$version \\ \n"
+                output="${output}\t\t$package=$version \\\\\n"
             fi
         done
-        output=${output::-5}
+        output="${output}\t\t&& \\\\\n"
         echo -e "${output}"
     else
         echo " No packages have been defined."
@@ -84,16 +84,16 @@ function get_yum_versions()
     if [[ -n "${packages}" ]]; then
         yum makecache > /dev/null 2>&1
 
-        output="RUN yum makecache && \\ \n"
-        output="${output}\tyum install -y \\ \n"
+        output="RUN yum makecache && \\\\\n"
+        output="${output}\tyum install -y \\\\\n"
 
         for package in $packages; do
             version=$(yum info "${package}" 2>/dev/null | grep '^Version' | head -n 1 | awk -F ' : ' '{print $2}')
             if [[ -n "${version}" ]]; then
-                output="${output}\t\t$package-$version \\ \n"
+                output="${output}\t\t$package-$version \\\\\n"
             fi
         done
-        output=${output::-5}
+        output="${output}\t\t&& \\\\\n"
         echo -e "${output}"
     else
         echo " No packages have been defined."

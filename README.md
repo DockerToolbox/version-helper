@@ -105,7 +105,8 @@ RUN apk update && \
 		curl=7.74.0-r0 \ 
 		git=2.30.1-r0 \ 
 		openssl-dev=1.1.1j-r0 \ 
-		wget=1.21.1-r1
+		wget=1.21.1-r1 \
+		&& \
 ```
 
 
@@ -118,7 +119,8 @@ RUN yum makecache && \
 		curl-7.61.1 \ 
 		git-2.23.3 \ 
 		openssl-devel-1.0.2k \ 
-		wget-1.14
+		wget-1.14 \
+		&& \
 ```
 
 ### Centos
@@ -130,7 +132,8 @@ RUN yum makecache && \
 		curl-7.61.1 \ 
 		git-2.27.0 \ 
 		openssl-devel-1.1.1g \ 
-		wget-1.19.5
+		wget-1.19.5 \
+		&& \
 ```
 
 ### Debian
@@ -142,7 +145,8 @@ RUN apt-get update && \
 		curl=7.64.0-4+deb10u1 \ 
 		git=1:2.20.1-2+deb10u3 \ 
 		libssl-dev=1.1.1d-0+deb10u5 \ 
-		wget=1.20.1-1.1
+		wget=1.20.1-1.1 \
+		&& \
 ```
 
 ### Ubuntu
@@ -154,7 +158,8 @@ RUN apt-get update && \
 		curl=7.68.0-1ubuntu2.4 \ 
 		git=1:2.25.1-1ubuntu3 \ 
 		libssl-dev=1.1.1f-1ubuntu2.2 \ 
-		wget=1.20.3-1ubuntu1
+		wget=1.20.3-1ubuntu1 \
+		&& \
 ```
 
 The output is a [hadolint](https://github.com/TravisToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile, it handles the formating of the version as again different OSs require different formats.
@@ -172,7 +177,8 @@ RUN apt-get update && \
 		curl=7.47.0-1ubuntu2.18 \ 
 		git=1:2.7.4-0ubuntu1.9 \ 
 		libssl-dev=1.0.2g-1ubuntu4.19 \ 
-		wget=1.17.1-1ubuntu1.5
+		wget=1.17.1-1ubuntu1.5 \
+		&& \
 ```
 
 **Ubuntu 18.04**
@@ -184,7 +190,8 @@ RUN apt-get update && \
 		curl=7.58.0-2ubuntu3.12 \ 
 		git=1:2.17.1-1ubuntu0.7 \ 
 		libssl-dev=1.1.1-1ubuntu2.1~18.04.8 \ 
-		wget=1.19.4-1ubuntu2.2
+		wget=1.19.4-1ubuntu2.2 \
+		&& \
 ```
 
 **Ubuntu 20.04**
@@ -196,7 +203,8 @@ RUN apt-get update && \
 		curl=7.68.0-1ubuntu2.4 \ 
 		git=1:2.25.1-1ubuntu3 \ 
 		libssl-dev=1.1.1f-1ubuntu2.2 \ 
-		wget=1.20.3-1ubuntu1
+		wget=1.20.3-1ubuntu1 \
+		&& \
 ```
 
 It should be very clear to see the different versions for each of the packages.
