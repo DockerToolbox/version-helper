@@ -159,7 +159,7 @@ RUN apt-get update && \
 		&& \
 ```
 
-The output is a [hadolint](https://github.com/TravisToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile, it handles the formating of the version as again different OSs require different formats.
+The output is a [hadolint](https://github.com/CICDToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile, it handles the formating of the version as again different OSs require different formats.
 
 #### Comparing different versions of the same operating system
 

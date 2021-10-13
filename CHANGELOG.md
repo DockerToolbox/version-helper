@@ -9,6 +9,8 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 - rebrand [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
 
+- rebrand [`[89aafef]`](https://github.com/DockerToolbox/version-helper/commit/89aafef4fd3beae69c606aa6a787f8bf6f05afbd)
+
 ### [v0.1.1](https://github.com/DockerToolbox/version-helper/compare/v0.1.0...v0.1.1)
 
 > Released on May, 25th 2021
