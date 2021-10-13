@@ -1,37 +1,34 @@
-<h1 align="center">
-	<a href="https://github.com/WolfSoftware">
-		<img src="https://raw.githubusercontent.com/WolfSoftware/branding/master/images/general/banners/64/black-and-white.png" alt="Wolf Software Logo" />
-	</a>
-	<br>
-	Generation package versions for use in Dockerfiles
-</h1>
-
 <p align="center">
-	<a href="https://travis-ci.com/DockerToolbox/version-helper">
-		<img src="https://img.shields.io/travis/com/DockerToolbox/version-helper/master?style=for-the-badge&logo=travis" alt="Build Status">
-	</a>
-	<a href="https://github.com/DockerToolbox/version-helper/releases/latest">
-		<img src="https://img.shields.io/github/v/release/DockerToolbox/version-helper?color=blue&style=for-the-badge&logo=github&logoColor=white&label=Latest%20Release" alt="Release">
-	</a>
-	<a href="https://github.com/DockerToolbox/version-helper/releases/latest">
-		<img src="https://img.shields.io/github/commits-since/DockerToolbox/version-helper/latest.svg?color=blue&style=for-the-badge&logo=github&logoColor=white" alt="Commits since release">
-	</a>
-	<a href="LICENSE.md">
-		<img src="https://img.shields.io/badge/license-MIT-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" alt="Software License">
-	</a>
-	<br>
-	<a href=".github/CODE_OF_CONDUCT.md">
-		<img src="https://img.shields.io/badge/Code%20of%20Conduct-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
-	</a>
-	<a href=".github/CONTRIBUTING.md">
-		<img src="https://img.shields.io/badge/Contributing-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
-	</a>
-	<a href=".github/SECURITY.md">
-		<img src="https://img.shields.io/badge/Report%20Security%20Concern-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
-	</a>
-	<a href=".github/SUPPORT.md">
-		<img src="https://img.shields.io/badge/Get%20Support-blue?style=for-the-badge&logo=read-the-docs&logoColor=white" />
-	</a>
+    <a href="https://github.com/DockerToolbox/">
+        <img src="https://cdn.wolfsoftware.com/assets/images/github/organisations/dockertoolbox/black-and-white-circle-256.png" alt="DockerToolbox logo" />
+    </a>
+    <br />
+    <a href="https://github.com/DockerToolbox/version-helper/actions/workflows/pipeline.yml">
+        <img src="https://img.shields.io/github/workflow/status/DockerToolbox/version-helper/pipeline/master?style=for-the-badge" alt="Github Build Status">
+    </a>
+    <a href="https://github.com/DockerToolbox/version-helper/releases/latest">
+        <img src="https://img.shields.io/github/v/release/DockerToolbox/version-helper?color=blue&label=Latest%20Release&style=for-the-badge" alt="Release">
+    </a>
+    <a href="https://github.com/DockerToolbox/version-helper/releases/latest">
+        <img src="https://img.shields.io/github/commits-since/DockerToolbox/version-helper/latest.svg?color=blue&style=for-the-badge" alt="Commits since release">
+    </a>
+    <br />
+    <a href=".github/CODE_OF_CONDUCT.md">
+        <img src="https://img.shields.io/badge/Code%20of%20Conduct-blue?style=for-the-badge" />
+    </a>
+    <a href=".github/CONTRIBUTING.md">
+        <img src="https://img.shields.io/badge/Contributing-blue?style=for-the-badge" />
+    </a>
+    <a href=".github/SECURITY.md">
+        <img src="https://img.shields.io/badge/Report%20Security%20Concern-blue?style=for-the-badge" />
+    </a>
+    <a href="https://github.com/DockerToolbox/version-helper/issues">
+        <img src="https://img.shields.io/badge/Get%20Support-blue?style=for-the-badge" />
+    </a>
+    <br />
+    <a href="https://wolfsoftware.com/">
+        <img src="https://img.shields.io/badge/Created%20by%20Wolf%20Software-blue?style=for-the-badge" />
+    </a>
 </p>
 
 ## Overview
@@ -234,19 +231,3 @@ We use this tool to maintain all of our own Docker containers and for each type 
 You might find, as we do, that there are subtle differences between difference OSs using the same package manager. I.e. amazon linux and centos, there the former has tar pre-installed but the latter does not.
 
 We get around this by using a super set of packages from across the different OSs, we find this makes little to no difference to the speed of the build or the size of the container because if it is already installed then nothing needs to change during the build.
-
-## Contributors
-
-<p>
-	<a href="https://github.com/TGWolf">
-		<img src="https://img.shields.io/badge/Wolf-black?style=for-the-badge" />
-	</a>
-</p>
-
-## Show Support
-
-<p>
-	<a href="https://ko-fi.com/wolfsoftware">
-		<img src="https://img.shields.io/badge/Ko%20Fi-blue?style=for-the-badge&logo=ko-fi&logoColor=white" />
-	</a>
-</p>
