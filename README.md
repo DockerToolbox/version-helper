@@ -39,53 +39,108 @@ This is a tool to assist in generating a list of packages and their associated v
 
 ### How does it work?
 
-It works by starting the required docker container and executing the version-grabber script, which will query the package manager for the selected packages and extract the version numbers.
+It works by starting the required docker container and executing the [version grabber](src/version-grabber.sh) script, which will query the package manager for the selected packages and extract the version numbers.
+
+## Supported Operating Systems
+
+| Operating System | Versions                     | Docker Hub                                             |
+| ---------------- | ---------------------------- | ------------------------------------------------------ |
+| Alpine           | 3.11, 3.12, 3.13 & 3.14      | [Official Image](https://hub.docker.com/_/alpine)      |
+| Amazon Linux     | 1 & 2                        | [Official Image](https://hub.docker.com/_/amazonlinux) |
+| Arch Linux       | base                         | [Official Image](https://hub.docker.com/_/archlinux)   |
+| Centos           | 7 & 8                        | [Official Image](https://hub.docker.com/_/centos)      |
+| Debian           | 9, 10, 11 & 12 (full & slim) | [Official Image](https://hub.docker.com/_/debian)      |
+| Oracle Linux     | 6, 7 & 8 (full & slim)       | [Official Image](https://hub.docker.com/_/oraclelinux) |
+| Photon           | 1.0, 2.0, 3.0 & 4.0          | [Official Image](https://hub.docker.com/_/photon)      |
+| Scientific Linux | 7                            | [Official Image](https://hub.docker.com/_/sl)          |
+| Ubuntu           | 14.04, 16.04, 18.04 & 20.04  | [Official Image](https://hub.docker.com/_/ubuntu)      |
 
 ## Usage
 
 ```shell
-Usage: get-versions.sh [ -h ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
-  -h    : Print this screen
-  -c    : config file name (including path)
-  -g    : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
-  -o    : which operating system to use (docker container)
-  -s    : which shell to use inside the container [Default: bash]
-  -t    : which tag to use [Default: latest]
+  Usage: get-versions.sh [ -hd ] [ -p ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
+    -h    : Print this screen
+    -d    : Enable debugging (set -x)
+    -p    : Package list only (No headers or other information)
+    -c    : config file name (including path)
+    -g    : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
+    -o    : which operating system to use (docker container)
+    -s    : which shell to use inside the container [Default: bash]
+    -t    : which tag to use [Default: latest]
 ```
 
 > Unless you have a specific reason to, we suggest you stick to using our supplied [version grabber](src/version-grabber.sh) script. The version grabber needs to be shell agnostic and process each package management output correctly.
 
-## Installation
-
-We recommend copying the [get-versions.sh](src/get-versions.sh) and the [version-grabber.sh](src/version-grabber.sh) into your ~/bin directory so that you can execute them from anywhere.
-
-### Example usage
-
-**Alpine Latest**
+### Alpine Latest (example)
 
 ```shell
 ./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o alpine -s ash
 ```
-
 > With Alpine we need to set the shell to ash (alpine doesn't have bash by default)
 
-**Debian stretch**
+### Debian stretch (example)
 
 ```shell
 ./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o debian -t stretch
 ```
+> The tag names reflect the tags used by the docker container, if you are unsure what tags there are then have a lot of at the relevant contains on [Docker Hub](https://hub.docker.com/).
 
-#### Tag Names
-
-The tag names reflect the tags used by the docker container, if you are unsure what tags there are then have a lot of at the relevant contains on [Docker Hub](https://hub.docker.com/).
-
-### What is actaually being run ?
+### What is actually being run ?
 
 The [get-versions](src/get-versions.sh) script takes all of the input from the command line and basically executes the following:
 
 ```shell
 docker run --rm -v "${GRABBER_SCRIPT}":/version-grabber --env-file="${CONFIG_FILE}" "${OSNAME}":"${TAGNAME}" "${SHELLNAME}" /version-grabber
 ```
+
+## Installation
+
+We recommend copying the [get-versions.sh](src/get-versions.sh) and the [version-grabber.sh](src/version-grabber.sh) into your ~/bin directory so that you can execute them from anywhere.
+
+## Packages Configuration
+
+The [packages file](config/config.example) lists all of the packages that you want/need to install during the creation of the containers. This is used to generate the required commands needed to install those packages for any given operating system (that is supported). The code tries to correctly identify the specific version of the package in relation to the specific version of the OS within the container. This might be considered overkill as you could simply install based on the package name but we wanted to go one step further and install the latest specific versioned package.
+
+Configuration can done in one of two ways:
+
+### Package Manager Based
+
+This is the default and the code attempts to work out which package manager is available for a given operating system and then used the correct list of packages.
+
+```
+APK_PACKAGES=                   # Alpine Packages
+APK_VIRTUAL_PACKAGE=            # Alpine Virtual Packages (These are not versioned) 
+APT_PACKAGES=                   # Debian / Ubuntu Packages
+PACMAN_PACKAGES=                # Arch Linux
+TDNF_PACKAGES=                  # Photon Packages
+YUM_PACKAGES=                   # Amazon Linux / Centos / Oracle Linux / Scientific Linux
+YUM_GROUPS=                     # Yum Groups
+```
+> Oracle Linux 8 slim comes with `microdnf` instead of `yum` but we simply install yum using `microdnf` and then carry on as normal.
+
+### Operating System Based
+
+```
+DISCOVER_BY=OS                  # Tell the version-grabber to use Operating System ID instead of package manager
+ALPINE_PACKAGES=                # Alpine Packages
+ALPINE_VIRTUAL_PACKAGES=        # Alpine Virtual Packages (These are not versioned)
+AMAZON_PACKAGES=                # Amazon Linux Packages
+AMAZON_GROUPS=                  # Amazon Groups
+ARCH_PACKAGES=                  # Arch Linux Packages
+CENTOS_PACKAGES=                # Centos Packages
+CENTOS_GROUPS=                  # Centos Groups
+DEBIAN_PACKAGES=                # Debian Packages
+ORACLE_PACKAGES=                # Oracle Linux Packages
+PHOTON_PACKAGES=                # Photon Linux Packages
+SCIENTIFIC_PACKAGES=            # Scientific Linux Packages
+UBUNTU_PACKAGES=                # Ubuntu Packages
+```
+
+#### What are Virtual Packages and Groups?
+
+Virtual Packages and Groups are `meta packages` or `packages of packages`, they allow for the simple installation of a collection of group of packages.
+
+Apk based virtual packages are things such as build-dependencies, build-base or linux-headers, and Yum based groups as things like "Development Tools" or "Security Tools".
 
 ## Sample output
 
@@ -96,112 +151,198 @@ This is a set of example output using the same [config file](config/config.examp
 ### Alpine
 
 ```shell
-RUN apk update && \ 
-	apk add --no-cache \ 
-		bash=5.1.0-r0 \ 
-		curl=7.74.0-r0 \ 
-		git=2.30.1-r0 \ 
-		openssl-dev=1.1.1j-r0 \ 
-		wget=1.21.1-r1 \
-		&& \
+apk update && \
+apk add --no-cache \
+	bash=5.1.4-r0 \
+	curl=7.79.1-r0 \
+	git=2.32.0-r0 \
+	openssl-dev=1.1.1l-r0 \
+	wget=1.21.1-r1 \
+	&& \
 ```
-
 
 ### Amazon Linux
 
 ```shell
-RUN yum makecache && \ 
-	yum install -y \ 
-		bash-4.2.46 \ 
-		curl-7.61.1 \ 
-		git-2.23.3 \ 
-		openssl-devel-1.0.2k \ 
-		wget-1.14 \
-		&& \
+yum makecache && \
+yum install -y \
+	bash-4.2.46 \
+	curl-7.76.1 \
+	git-2.32.0 \
+	openssl-devel-1.0.2k \
+	wget-1.14 \
+	&& \
+```
+
+### Arch Linux
+
+```shell
+pacman -Syu --noconfirm && \
+pacman -S --noconfirm \
+	bash=5.1.008-1 \
+	curl=7.79.1-1 \
+	git=2.33.1-1 \
+	wget=1.21.2-1 \
+	&& \
 ```
 
 ### Centos
 
 ```shell
-RUN yum makecache && \ 
-	yum install -y \ 
-		bash-4.4.19 \ 
-		curl-7.61.1 \ 
-		git-2.27.0 \ 
-		openssl-devel-1.1.1g \ 
-		wget-1.19.5 \
-		&& \
+yum makecache && \
+yum install -y \
+	bash-4.4.19 \
+	curl-7.61.1 \
+	git-2.27.0 \
+	openssl-devel-1.1.1g \
+	wget-1.19.5 \
+	&& \
 ```
 
 ### Debian
 
 ```shell
-RUN apt-get update && \ 
-	apt-get -y --no-install-recommends install \ 
-		bash=5.0-4 \ 
-		curl=7.64.0-4+deb10u1 \ 
-		git=1:2.20.1-2+deb10u3 \ 
-		libssl-dev=1.1.1d-0+deb10u5 \ 
-		wget=1.20.1-1.1 \
-		&& \
+apt-get update && \
+apt-get -y --no-install-recommends install \
+	bash=5.1-2+b3 \
+	curl=7.74.0-1.3+b1 \
+	git=1:2.30.2-1 \
+	libssl-dev=1.1.1k-1+deb11u1 \
+	wget=1.21-1+b1 \
+	&& \
+```
+
+### Oracle Linux (Excluding 8-slim)
+
+```
+yum makecache && \
+yum install -y \
+	bash-4.4.20 \
+	curl-7.61.1 \
+	git-2.27.0 \
+	openssl-devel-1.1.1g \
+	wget-1.19.5 \
+	&& \
+```
+
+### Oracle Linux (8-slim)
+
+```
+microdnf update && \
+microdnf install yum && \
+yum makecache && \
+yum install -y \
+	bash-4.4.20 \
+	curl-7.61.1 \
+	git-2.27.0 \
+	openssl-devel-1.1.1g \
+	wget-1.19.5 \
+	&& \
+```
+> Note the installation of yum via microdnf - this is because 8-slim does not come with yum pre-installed.
+
+### Photon
+
+```
+tdnf makecache && \
+tdnf install -y \
+	bash-5.0 \
+	curl-7.78.0 \
+	git-2.30.0 \
+	wget-1.20.3 \
+	&& \
+```
+
+### Scientific Linux
+
+```
+yum makecache && \
+yum install -y \
+	bash-4.2.46 \
+	curl-7.29.0 \
+	git-1.8.3.1 \
+	openssl-devel-1.0.2k \
+	wget-1.14 \
+	&& \
 ```
 
 ### Ubuntu
 
 ```shell
-RUN apt-get update && \ 
-	apt-get -y --no-install-recommends install \ 
-		bash=5.0-6ubuntu1.1 \ 
-		curl=7.68.0-1ubuntu2.4 \ 
-		git=1:2.25.1-1ubuntu3 \ 
-		libssl-dev=1.1.1f-1ubuntu2.2 \ 
-		wget=1.20.3-1ubuntu1 \
-		&& \
+apt-get update && \
+apt-get -y --no-install-recommends install \
+	bash=5.0-6ubuntu1.1 \
+	curl=7.68.0-1ubuntu2.7 \
+	git=1:2.25.1-1ubuntu3.2 \
+	libssl-dev=1.1.1f-1ubuntu2.8 \
+	wget=1.20.3-1ubuntu1 \
+	&& \
 ```
 
-The output is a [hadolint](https://github.com/CICDToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile, it handles the formating of the version as again different OSs require different formats.
+> The output is a [hadolint](https://github.com/CICDToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile.
 
-#### Comparing different versions of the same operating system
+### Comparing different versions of the same operating system
 
-The following is a demonstration of the output from 3 different versions of the same OS, just to demonstrate the results.
+The following is a demonstration of the output from 4 different versions of the same operating system (Ubuntu), just to demonstrate the results.
+
+**Ubuntu 14.04**
+
+```shell
+./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 14.04
+
+apt-get update && \
+apt-get -y --no-install-recommends install \
+	bash=4.3-7ubuntu1.7 \
+	curl=7.35.0-1ubuntu2.20 \
+	git=1:1.9.1-1ubuntu0.10 \
+	libssl-dev=1.0.1f-1ubuntu2.27 \
+	wget=1.15-1ubuntu1.14.04.5 \
+	&& \
+```
 
 **Ubuntu 16.04**
 
 ```shell
-RUN apt-get update && \ 
-	apt-get -y --no-install-recommends install \ 
-		bash=4.3-14ubuntu1.4 \ 
-		curl=7.47.0-1ubuntu2.18 \ 
-		git=1:2.7.4-0ubuntu1.9 \ 
-		libssl-dev=1.0.2g-1ubuntu4.19 \ 
-		wget=1.17.1-1ubuntu1.5 \
-		&& \
+./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 16.04
+
+apt-get update && \
+apt-get -y --no-install-recommends install \
+	bash=4.3-14ubuntu1.4 \
+	curl=7.47.0-1ubuntu2.19 \
+	git=1:2.7.4-0ubuntu1.10 \
+	libssl-dev=1.0.2g-1ubuntu4.20 \
+	wget=1.17.1-1ubuntu1.5 \
+	&& \
 ```
 
 **Ubuntu 18.04**
 
 ```shell
-RUN apt-get update && \ 
-	apt-get -y --no-install-recommends install \ 
-		bash=4.4.18-2ubuntu1.2 \ 
-		curl=7.58.0-2ubuntu3.12 \ 
-		git=1:2.17.1-1ubuntu0.7 \ 
-		libssl-dev=1.1.1-1ubuntu2.1~18.04.8 \ 
-		wget=1.19.4-1ubuntu2.2 \
-		&& \
+./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 18.04
+
+apt-get update && \
+apt-get -y --no-install-recommends install \
+	bash=4.4.18-2ubuntu1.2 \
+	curl=7.58.0-2ubuntu3.16 \
+	git=1:2.17.1-1ubuntu0.9 \
+	libssl-dev=1.1.1-1ubuntu2.1~18.04.13 \
+	wget=1.19.4-1ubuntu2.2 \
+	&& \
 ```
 
 **Ubuntu 20.04**
 
 ```shell
-RUN apt-get update && \ 
-	apt-get -y --no-install-recommends install \ 
-		bash=5.0-6ubuntu1.1 \ 
-		curl=7.68.0-1ubuntu2.4 \ 
-		git=1:2.25.1-1ubuntu3 \ 
-		libssl-dev=1.1.1f-1ubuntu2.2 \ 
-		wget=1.20.3-1ubuntu1 \
-		&& \
+./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 20.04
+
+apt-get update && \
+apt-get -y --no-install-recommends install \
+	bash=5.0-6ubuntu1.1 \
+	curl=7.68.0-1ubuntu2.7 \
+	git=1:2.25.1-1ubuntu3.2 \
+	libssl-dev=1.1.1f-1ubuntu2.8 \
+	wget=1.20.3-1ubuntu1 \
+	&& \
 ```
 
 It should be very clear to see the different versions for each of the packages.
@@ -211,16 +352,12 @@ It should be very clear to see the different versions for each of the packages.
 ```
 APK_PACKAGES=bash curl git openssl-dev wget
 APT_PACKAGES=bash curl git libssl-dev wget
+PACMAN_PACKAGES=bash curl git libssl-dev wget
+TDNF_PACKAGES=bash curl git libssl-dev wget
 YUM_PACKAGES=bash curl git openssl-devel wget
 ```
 
 > Notice there are NOT quotes around the list of packages!
-
-There are 3 parts to the config file, this is because there are multiple different package management systems in use and different systems name their packages differently.
-
-* APK_PACKAGES - apk specific package names
-* APT_PACKAGES - apt specific package names
-* YUM_PACKAGES - yum specific package names
 
 ## Real world usage
 

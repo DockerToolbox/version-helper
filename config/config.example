@@ -1,20 +1,5 @@
-SDISCOVER_BY=PM
-ALPINE_PACKAGES=bash curl git openssl-dev wget
-ALPINE_VIRTUAL_PACKAGES=build-dependencies build-base
-AMAZON_PACKAGES=bash curl git openssl-devel wget
-ARCH_PACKAGES=bash curl git openssl-devel wget
-CENTOS_PACKAGES=bash curl git openssl-devel wget
-DEBIAN_PACKAGES=bash curl git libssl-dev wget
-ORACLE_PACKAGES=bash curl git libssl-dev wget
-PHOTON_PACKAGES=bash curl git libssl-dev wget
-SCIENTIFIC_PACKAGES=bash curl git libssl-dev wget
-UBUNTU_PACKAGES=bash curl git libssl-dev wget
-
-
 APK_PACKAGES=bash curl git openssl-dev wget
-APK_VIRTUAL_PACKAGES=build-dependencies build-base linux-headers
-APT_PACKAGES=     
+APT_PACKAGES=bash curl git libssl-dev wget
 PACMAN_PACKAGES=bash curl git libssl-dev wget
 TDNF_PACKAGES=bash curl git libssl-dev wget
 YUM_PACKAGES=bash curl git openssl-devel wget
-YUM_GROUPS="Development Tools" 'Security Tools'
