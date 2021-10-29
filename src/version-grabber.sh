@@ -320,7 +320,7 @@ function discover_by_operating_system
             ;;
         # Amazon Linux (amazonlinux)
         amzn)
-            get_yum_versions "${AMAZON_PACKAGES:-}"
+            get_yum_versions "${AMAZON_PACKAGES:-}" "${AMAZON_GROUPS:-}"
             ;;
         # Arch Linux (archlinux)
         arch)
@@ -328,7 +328,7 @@ function discover_by_operating_system
             ;;
         # Centos (Centos)
         centos)
-            get_yum_versions "${CENTOS_PACKAGES:-}"
+            get_yum_versions "${CENTOS_PACKAGES:-}" "${CENTOS_GROUPS:-}"
             ;;
         # Debian (debian)
         debian)
@@ -336,7 +336,7 @@ function discover_by_operating_system
             ;;
         # Oracle Linux (oraclelinux)
         ol)
-            get_yum_versions "${ORACLE_PACKAGES:-}"
+            get_yum_versions "${ORACLE_PACKAGES:-}" "${ORACLE_GROUPS:-}"
             ;;
         # Photon (photon)
         photon)
@@ -344,7 +344,7 @@ function discover_by_operating_system
             ;;
         # Scientific Linux (sl)
         scientific)
-            get_yum_versions "${SCIENTIFIC_PACKAGES:-}"
+            get_yum_versions "${SCIENTIFIC_PACKAGES:-}" "${SCIENTIFIC_GROUPS:-}"
             ;;
         # Ubuntu
         ubuntu)

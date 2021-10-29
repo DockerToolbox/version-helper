@@ -9,6 +9,8 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 - udpate [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
 
+- udpate [`[956ad6f]`](https://github.com/DockerToolbox/version-helper/commit/956ad6fbffcb25f6af1f1f2130b4f3d5f57343a0)
+
 - Update [`[f7fc2bf]`](https://github.com/DockerToolbox/version-helper/commit/f7fc2bff17e7b5a73976f70849662531268afc70)
 
 - rebrand [`[91af304]`](https://github.com/DockerToolbox/version-helper/commit/91af304b52cebf218f801d9694d087ca004e5170)

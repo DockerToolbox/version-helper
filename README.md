@@ -121,7 +121,7 @@ YUM_GROUPS=                     # Yum Groups
 ### Operating System Based
 
 ```
-DISCOVER_BY=OS                  # Tell the version-grabber to use Operating System ID instead of package manager
+DISCOVER_BY=OS                  # Use Operating System ID instead of package manager
 ALPINE_PACKAGES=                # Alpine Packages
 ALPINE_VIRTUAL_PACKAGES=        # Alpine Virtual Packages (These are not versioned)
 AMAZON_PACKAGES=                # Amazon Linux Packages
@@ -131,20 +131,26 @@ CENTOS_PACKAGES=                # Centos Packages
 CENTOS_GROUPS=                  # Centos Groups
 DEBIAN_PACKAGES=                # Debian Packages
 ORACLE_PACKAGES=                # Oracle Linux Packages
+ORACLE_GROUPS=                  # Oracle Groups
 PHOTON_PACKAGES=                # Photon Linux Packages
 SCIENTIFIC_PACKAGES=            # Scientific Linux Packages
+SCIENTIFIC_GROUPS=              # Scientific Linux Groups
 UBUNTU_PACKAGES=                # Ubuntu Packages
 ```
 
 #### What are Virtual Packages and Groups?
 
-Virtual Packages and Groups are `meta packages` or `packages of packages`, they allow for the simple installation of a collection of group of packages.
+Virtual Packages and Groups are `meta packages` or `packages of packages`, they allow for the simple installation of a collection or group of packages.
 
 Apk based virtual packages are things such as build-dependencies, build-base or linux-headers, and Yum based groups as things like "Development Tools" or "Security Tools".
 
 ## Sample output
 
 This is a set of example output using the same [config file](config/config.example) but different operating systems, each time we let the tag default to latest.
+
+One key thing to note is that we do not output RUN before the package installation commands, this is so that the generated commands can be used in a bigger variety of ways.
+
+The output is a [hadolint](https://github.com/CICDToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile.
 
 > If no version can be found then the package is omitted from the list.
 
@@ -279,8 +285,6 @@ apt-get -y --no-install-recommends install \
 	&& \
 ```
 
-> The output is a [hadolint](https://github.com/CICDToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile.
-
 ### Comparing different versions of the same operating system
 
 The following is a demonstration of the output from 4 different versions of the same operating system (Ubuntu), just to demonstrate the results.
@@ -361,7 +365,7 @@ YUM_PACKAGES=bash curl git openssl-devel wget
 
 ## Real world usage
 
-We use this tool to maintain all of our own Docker containers and for each type we build we create a config file and pass this to get_versions.sh
+We use this tool to maintain all of our own Docker containers and have incorporated it into our (container framework)[https://github.com/DockerToolbox/container-framework]
 
 ## Caveat
 
