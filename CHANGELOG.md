@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.2...HEAD)
 
-- rebrand [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- Update [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+- rebrand [`[91af304]`](https://github.com/DockerToolbox/version-helper/commit/91af304b52cebf218f801d9694d087ca004e5170)
 
 - rebrand [`[89aafef]`](https://github.com/DockerToolbox/version-helper/commit/89aafef4fd3beae69c606aa6a787f8bf6f05afbd)
 

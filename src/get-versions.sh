@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/usr/bin/env bash
 
 # -------------------------------------------------------------------------------- #
 # Description                                                                      #
@@ -10,6 +10,27 @@
 # This is a tool to assist in generating a list of packages and their associated   #
 # versions for use within a Dockerfile.                                            #
 # -------------------------------------------------------------------------------- #
+
+# -------------------------------------------------------------------------------- #
+# Enable strict mode                                                               #
+# -------------------------------------------------------------------------------- #
+# errexit = Any expression that exits with a non-zero exit code terminates         #
+# execution of the script, and the exit code of the expression becomes the exit    #
+# code of the script.                                                              #
+#                                                                                  #
+# pipefail = This setting prevents errors in a pipeline from being masked. If any  #
+# command in a pipeline fails, that return code will be used as the return code of #
+# the whole pipeline. By default, the pipeline's return code is that of the last   #
+# command - even if it succeeds.                                                   #
+#                                                                                  #
+# noclobber = Prevents files from being overwritten when redirected (>|).          #
+#                                                                                  #
+# nounset = Any reference to any variable that hasn't previously defined, with the #
+# exceptions of $* and $@ is an error, and causes the program to immediately exit. #
+# -------------------------------------------------------------------------------- #
+
+set -o errexit -o pipefail -o noclobber -o nounset
+IFS=$'\n\t'
 
 # -------------------------------------------------------------------------------- #
 # Required commands                                                                #
@@ -25,9 +46,10 @@ PREREQ_COMMANDS=( "docker" )
 # A set of global flags that we use for configuration.                             #
 # -------------------------------------------------------------------------------- #
 
-NO_HEADERS=false
+NO_HEADERS=false                 # Shouold we hide the header / footer?
 USE_COLOURS=true                 # Should we use colours in our output ?
-WIDTH=120
+FORCE_TERMINAL=true              # Force terminal type if requied
+WIDTH=128                        # Force terminal width
 
 # -------------------------------------------------------------------------------- #
 # The wrapper function                                                             #
@@ -39,7 +61,9 @@ function wrapper()
 {
     draw_header
 
-    docker run --rm -v "${GRABBER_SCRIPT}":/version-grabber --env-file="${CONFIG_FILE}" "${OSNAME}":"${TAGNAME}" "${SHELLNAME}" /version-grabber
+    PACKAGES=$(docker run --rm -v "${GRABBER_SCRIPT}":/version-grabber --env-file="${CONFIG_FILE}" "${OSNAME}":"${TAGNAME}" "${SHELLNAME}" /version-grabber)
+
+    echo "${PACKAGES}"
 
     draw_line
 }
@@ -58,8 +82,9 @@ function usage()
     fi
 
 cat <<EOF
-  Usage: $0 [ -h ] [ -p ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
+  Usage: $0 [ -hd ] [ -p ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
     -h    : Print this screen
+    -d    : Enable debugging (set -x)
     -p    : Package list only (No headers or other information)
     -c    : config file name (including path)
     -g    : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
@@ -85,10 +110,13 @@ function process_arguments()
         usage
     fi
 
-    while getopts ":hpc:g:o:s:t:" arg; do
+    while getopts ":hdpc:g:o:s:t:" arg; do
         case $arg in
             h)
                 usage
+                ;;
+            d)
+                set -x
                 ;;
             p)
                 NO_HEADERS=true
@@ -126,8 +154,12 @@ function process_arguments()
     [[ -z "${CONFIG_FILE}" ]] && usage
     [[ -z "${GRABBER_SCRIPT}" ]] && GRABBER_SCRIPT="$(realpath ~/bin/version-grabber.sh)"
     [[ -z "${OSNAME}" ]] &&  usage
-    [[ -z "${SHELLNAME}" ]] && SHELLNAME='bash'
-    [[ -z "${TAGNAME}" ]] && TAGNAME='latest'
+
+    SHELLNAME="${SHELLNAME:-bash}"
+    TAGNAME="${TAGNAME:-latest}"
+
+#    [[ -z "${SHELLNAME}" ]] && SHELLNAME='bash'
+#    [[ -z "${TAGNAME}" ]] && TAGNAME='latest'
 
     wrapper
     clean_exit
@@ -177,7 +209,11 @@ function check_colours()
     fi
 
     if ! test -t 1; then
-        return
+        if [[ "${FORCE_TERMINAL}" = true ]]; then
+            export TERM=xterm
+        else
+            return
+        fi
     fi
 
     if ! tput longname > /dev/null 2>&1; then
@@ -235,6 +271,12 @@ function show_success()
     fi
 }
 
+# -------------------------------------------------------------------------------- #
+# Draw Header                                                                      #
+# -------------------------------------------------------------------------------- #
+# Draw a nice header if -p has not been passed.                                    #
+# -------------------------------------------------------------------------------- #
+
 function draw_header
 {
     if [[ "${NO_HEADERS}" = false ]]; then
@@ -244,7 +286,7 @@ function draw_header
         config_string="${green}Config File:${reset} $(basename "${CONFIG_FILE}")  ${green}Grabber Script:${reset} $(basename "${GRABBER_SCRIPT}")  ${green}Docker Container:${reset} ${OSNAME}:${TAGNAME}  ${green}Shell:${reset} ${SHELLNAME}"
 
         draw_line
-        center_text "Docker package version grabber"
+        center_text "Package version grabber by Wolf Software Limited"
         draw_line
         center_text "${config_string}" "${#config_string_raw}"
         draw_line
@@ -270,7 +312,7 @@ function abs()
 
 function center_text()
 {
-    if [[ -n ${2} ]]; then
+    if [[ -n ${2:-} ]]; then
         textsize=${2}
         extra=$(abs "$(( textsize - ${#1} ))")
     else
