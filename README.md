@@ -107,6 +107,8 @@ Configuration can done in one of two ways:
 
 This is the default and the code attempts to work out which package manager is available for a given operating system and then used the correct list of packages.
 
+There are **NO** quotes around the list of packages, this is a `space separated` list of package names. The only exception is `groups` which are a space separated list of quoted strings.
+
 ```
 APK_PACKAGES=                   # Alpine Packages
 APK_VIRTUAL_PACKAGE=            # Alpine Virtual Packages (These are not versioned) 
@@ -361,11 +363,9 @@ TDNF_PACKAGES=bash curl git libssl-dev wget
 YUM_PACKAGES=bash curl git openssl-devel wget
 ```
 
-> Notice there are NOT quotes around the list of packages!
-
 ## Real world usage
 
-We use this tool to maintain all of our own Docker containers and have incorporated it into our (container framework)[https://github.com/DockerToolbox/container-framework]
+We use this tool to maintain all of our own Docker containers and have incorporated it into our [container framework](https://github.com/DockerToolbox/container-framework)
 
 ## Caveat
 
