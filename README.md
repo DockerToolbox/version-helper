@@ -287,6 +287,14 @@ apt-get -y --no-install-recommends install \
 	&& \
 ```
 
+### No Packages
+
+If no valid packages are found then the version grabber will return only a comment which will notify you of this but also not break the container.
+
+```
+# No packages identified
+```
+
 ### Comparing different versions of the same operating system
 
 The following is a demonstration of the output from 4 different versions of the same operating system (Ubuntu), just to demonstrate the results.

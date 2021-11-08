@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.2...HEAD)
 
-- udpate [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- Update [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+- udpate [`[aa9fff5]`](https://github.com/DockerToolbox/version-helper/commit/aa9fff5cc680adb70ef00187541f5175aced0428)
 
 - udpate [`[2557fa1]`](https://github.com/DockerToolbox/version-helper/commit/2557fa1a11fbe976ae15a668bb15dfbf21e951b0)
 
