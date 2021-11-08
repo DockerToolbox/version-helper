@@ -1,7 +1,5 @@
 # shellcheck disable=SC2148
 
-#set -x
-
 # -------------------------------------------------------------------------------- #
 # Description                                                                      #
 # -------------------------------------------------------------------------------- #
@@ -11,27 +9,6 @@
 # It will display ready to use config that can be added directly into a Dockerfile #
 # and meets the current hadolint specifications.                                   #
 # -------------------------------------------------------------------------------- #
-
-# -------------------------------------------------------------------------------- #
-# Enable strict mode                                                               #
-# -------------------------------------------------------------------------------- #
-# errexit = Any expression that exits with a non-zero exit code terminates         #
-# execution of the script, and the exit code of the expression becomes the exit    #
-# code of the script.                                                              #
-#                                                                                  #
-# pipefail = This setting prevents errors in a pipeline from being masked. If any  #
-# command in a pipeline fails, that return code will be used as the return code of #
-# the whole pipeline. By default, the pipeline's return code is that of the last   #
-# command - even if it succeeds.                                                   #
-#                                                                                  #
-# noclobber = Prevents files from being overwritten when redirected (>|).          #
-#                                                                                  #
-# nounset = Any reference to any variable that hasn't previously defined, with the #
-# exceptions of $* and $@ is an error, and causes the program to immediately exit. #
-# -------------------------------------------------------------------------------- #
-
-set -o errexit -o pipefail -o noclobber -o nounset
-IFS=$'\n\t'
 
 # -------------------------------------------------------------------------------- #
 # Get apk versions                                                                 #
@@ -46,8 +23,8 @@ function get_apk_versions()
     local output=''
     local IFS=' '
 
+    output="${output}\tapk update && \\\\\n"
     if [[ -n "${packages}" ]]; then
-        output="${output}\tapk update && \\\\\n"
         output="${output}\tapk add --no-cache \\\\\n"
 
         for package in $packages; do
@@ -66,7 +43,6 @@ function get_apk_versions()
         done
         output="${output}\t\t&& \\\\\n"
     fi
-    [[ -z "${output}" ]] && output="\t# No packages identified"
     echo -e "${output}"
 }
 
@@ -82,9 +58,10 @@ function get_apt_versions()
     local output=''
     local IFS=' '
 
+    output="${output}\tapt-get update && \\\\\n"
+
     packages=$(clean_string "${packages}")
     if [[ -n "${packages}" ]]; then
-        output="${output}\tapt-get update && \\\\\n"
         output="${output}\tapt-get -y --no-install-recommends install \\\\\n"
 
        for package in $packages; do
@@ -95,7 +72,6 @@ function get_apt_versions()
         done
         output="${output}\t\t&& \\\\\n"
     fi
-    [[ -z "${output}" ]] && output="\t# No packages identified"
     echo -e "${output}"
 }
 
@@ -112,10 +88,11 @@ function get_microdnf_versions()
     local output=''
     local IFS=' '
 
+    output="${output}\tmicrodnf update && \\\\\n"
+    output="${output}\tmicrodnf install yum && \\\\\n"
+    output="${output}\tyum makecache && \\\\\n"
+
     if [[ -n "${packages}" ]]; then
-        output="${output}\tmicrodnf update && \\\\\n"
-        output="${output}\tmicrodnf install yum && \\\\\n"
-        output="${output}\tyum makecache && \\\\\n"
         output="${output}\tyum install -y \\\\\n"
 
         for package in $packages; do
@@ -139,7 +116,6 @@ function get_microdnf_versions()
         done
         output="${output}\t\t&& \\\\\n"
     fi
-    [[ -z "${output}" ]] && output="\t# No packages identified"
     echo -e "${output}"
 }
 
@@ -155,8 +131,8 @@ function get_pacman_versions()
     local output=''
     local IFS=' '
 
+    output="${output}\tpacman -Syu --noconfirm && \\\\\n"
     if [[ -n "${packages}" ]]; then
-        output="${output}\tpacman -Syu --noconfirm && \\\\\n"
         output="${output}\tpacman -S --noconfirm \\\\\n"
 
         for package in $packages; do
@@ -167,7 +143,6 @@ function get_pacman_versions()
         done
         output="${output}\t\t&& \\\\\n"
     fi
-    [[ -z "${output}" ]] && output="\t# No packages identified"
     echo -e "${output}"
 }
 
@@ -183,8 +158,8 @@ function get_tdnf_versions()
     local output=''
     local IFS=' '
 
+    output="${output}\ttdnf makecache && \\\\\n"
     if [[ -n "${packages}" ]]; then
-        output="${output}\ttdnf makecache && \\\\\n"
         output="${output}\ttdnf install -y \\\\\n"
 
         for package in $packages; do
@@ -195,7 +170,6 @@ function get_tdnf_versions()
         done
         output="${output}\t\t&& \\\\\n"
     fi
-    [[ -z "${output}" ]] && output="\t# No packages identified"
     echo -e "${output}"
 }
 
@@ -212,8 +186,8 @@ function get_yum_versions()
     local output=''
     local IFS=' '
 
+    output="${output}\tyum makecache && \\\\\n"
     if [[ -n "${packages}" ]]; then
-        output="${output}\tyum makecache && \\\\\n"
         output="${output}\tyum install -y \\\\\n"
 
         for package in ${packages}; do
@@ -238,7 +212,6 @@ function get_yum_versions()
         done
         output="${output}\t\t&& \\\\\n"
     fi
-    [[ -z "${output}" ]] && output="\t# No packages identified"
     echo -e "${output}"
 }
 
@@ -429,6 +402,30 @@ function force_update_and_install_of_prereqs
 }
 
 # -------------------------------------------------------------------------------- #
+# Set strict mode                                                                  #
+# -------------------------------------------------------------------------------- #
+# errexit = Any expression that exits with a non-zero exit code terminates         #
+# execution of the script, and the exit code of the expression becomes the exit    #
+# code of the script.                                                              #
+#                                                                                  #
+# pipefail = This setting prevents errors in a pipeline from being masked. If any  #
+# command in a pipeline fails, that return code will be used as the return code of #
+# the whole pipeline. By default, the pipeline's return code is that of the last   #
+# command - even if it succeeds.                                                   #
+#                                                                                  #
+# noclobber = Prevents files from being overwritten when redirected (>|).          #
+#                                                                                  #
+# nounset = Any reference to any variable that hasn't previously defined, with the #
+# exceptions of $* and $@ is an error, and causes the program to immediately exit. #
+# -------------------------------------------------------------------------------- #
+
+function set_strict_mode()
+{
+    set -o errexit -o noclobber -o nounset -o pipefail
+    IFS=$'\n\t'
+}
+
+# -------------------------------------------------------------------------------- #
 # Main()                                                                           #
 # -------------------------------------------------------------------------------- #
 # The main function where all of the heavy lifting and script config is done.      #
@@ -436,6 +433,8 @@ function force_update_and_install_of_prereqs
 
 function main
 {
+    set_strict_mode
+
     force_update_and_install_of_prereqs
 
     #
