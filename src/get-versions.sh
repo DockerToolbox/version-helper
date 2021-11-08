@@ -12,27 +12,6 @@
 # -------------------------------------------------------------------------------- #
 
 # -------------------------------------------------------------------------------- #
-# Enable strict mode                                                               #
-# -------------------------------------------------------------------------------- #
-# errexit = Any expression that exits with a non-zero exit code terminates         #
-# execution of the script, and the exit code of the expression becomes the exit    #
-# code of the script.                                                              #
-#                                                                                  #
-# pipefail = This setting prevents errors in a pipeline from being masked. If any  #
-# command in a pipeline fails, that return code will be used as the return code of #
-# the whole pipeline. By default, the pipeline's return code is that of the last   #
-# command - even if it succeeds.                                                   #
-#                                                                                  #
-# noclobber = Prevents files from being overwritten when redirected (>|).          #
-#                                                                                  #
-# nounset = Any reference to any variable that hasn't previously defined, with the #
-# exceptions of $* and $@ is an error, and causes the program to immediately exit. #
-# -------------------------------------------------------------------------------- #
-
-set -o errexit -o pipefail -o noclobber -o nounset
-IFS=$'\n\t'
-
-# -------------------------------------------------------------------------------- #
 # Required commands                                                                #
 # -------------------------------------------------------------------------------- #
 # These commands MUST exist in order for the script to correctly run.              #
@@ -76,23 +55,37 @@ function wrapper()
 
 function usage()
 {
-    if [[ -n ${1:-} ]];
-    then
-        show_error "  Error: ${1}"
-    fi
+    [[ -n "${*}" ]] && error "  Error: ${*}"
 
 cat <<EOF
   Usage: $0 [ -hd ] [ -p ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
-    -h    : Print this screen
-    -d    : Enable debugging (set -x)
-    -p    : Package list only (No headers or other information)
-    -c    : config file name (including path)
-    -g    : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
-    -o    : which operating system to use (docker container)
-    -s    : which shell to use inside the container [Default: bash]
-    -t    : which tag to use [Default: latest]
+    -h | --help     : Print this screen
+    -d | --debug    : Enable debugging (set -x)
+    -p | --package  : Package list only (No headers or other information)
+    -c | --config   : config file name (including path)
+    -g | --grabber  : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
+    -o | --os       : which operating system to use (docker container)
+    -s | --shell    : which shell to use inside the container [Default: bash]
+    -t | --tag      : which tag to use [Default: latest]
 EOF
     clean_exit 1;
+}
+
+# -------------------------------------------------------------------------------- #
+# Test Getopt                                                                      #
+# -------------------------------------------------------------------------------- #
+# Test to ensure we have the GNU getopt available.                                 #
+# -------------------------------------------------------------------------------- #
+
+function test_getopt
+{
+    if getopt --test > /dev/null && true; then
+        error "'getopt --test' failed in this environment - Please ensure you are using the gnu getopt."
+        if [[ "$(uname -s)" == "Darwin" ]]; then
+            error "You are using MAcOS - please ensure you have installed gnu-getopt and updated your path."
+        fi
+        exit 1
+    fi
 }
 
 # -------------------------------------------------------------------------------- #
@@ -106,47 +99,67 @@ EOF
 
 function process_arguments()
 {
+    local options
+    local longopts
+    local error_msg
+
     if [[ $# -eq 0 ]]; then
         usage
     fi
 
-    while getopts ":hdpc:g:o:s:t:" arg; do
-        case $arg in
-            h)
+    test_getopt
+
+    options=hdpc:g:o:s:t:
+    longopts=help,debug,package,config:,grabber:,os:,shell:,tag:
+
+    if ! PARSED=$(getopt --options=$options --longoptions=$longopts --name "$0" -- "$@" 2>&1) && true; then
+        error_msg=$(echo -e "${PARSED}" | head -n 1 | awk -F ':' '{print $2}')
+        usage "${error_msg}"
+    fi
+    eval set -- "${PARSED}"
+
+    while true; do
+        case "${1}" in
+            -h|--help)
                 usage
                 ;;
-            d)
+            -d|--debug)
                 set -x
+                shift
                 ;;
-            p)
+            -p|--package)
                 NO_HEADERS=true
+                shift
                 ;;
-            c)
-                CONFIG_FILE=$(realpath "${OPTARG}")
+            -c|--config)
+                CONFIG_FILE=$(realpath "${2}")
                 if [[ ! -r "${CONFIG_FILE}" ]]; then
-                    show_error "Cannot read config file: ${CONFIG_FILE}"
+                    error "Cannot read config file: ${CONFIG_FILE}"
                 fi
+                shift 2
                 ;;
-            g)
-                GRABBER_SCRIPT=$(realpath "${OPTARG}")
+            -g|--grabber)
+                GRABBER_SCRIPT=$(realpath "${2}")
                 if [[ ! -r "${GRABBER_SCRIPT}" ]]; then
-                    show_error "Cannot read grabber script: ${GRABBER_SCRIPT}"
+                    error "Cannot read grabber script: ${GRABBER_SCRIPT}"
                 fi
+                shift 2
                 ;;
-            o)
-                OSNAME=${OPTARG}
+            -o|--os)
+                OSNAME=${2}
+                shift 2
                 ;;
-            s)
-                SHELLNAME=${OPTARG}
+            -s|--shell)
+                SHELLNAME=${2}
+                shift 2
                 ;;
-            t)
-                TAGNAME=${OPTARG}
+            -t|--tag)
+                TAGNAME=${2}
+                shift 2
                 ;;
-            :)
-                usage "Option -$OPTARG requires an argument."
-                ;;
-            \?)
-                usage "Invalid option: -$OPTARG"
+            --)
+                shift
+                break
                 ;;
         esac
     done
@@ -157,9 +170,6 @@ function process_arguments()
 
     SHELLNAME="${SHELLNAME:-bash}"
     TAGNAME="${TAGNAME:-latest}"
-
-#    [[ -z "${SHELLNAME}" ]] && SHELLNAME='bash'
-#    [[ -z "${TAGNAME}" ]] && TAGNAME='latest'
 
     wrapper
     clean_exit
@@ -182,7 +192,7 @@ function process_arguments()
 # -------------------------------------------------------------------------------- #
 
 # -------------------------------------------------------------------------------- #
-# Check Colours                                                                    #
+# Init Colours                                                                     #
 # -------------------------------------------------------------------------------- #
 # This function will check to see if we are able to support colours and how many   #
 # we are able to support.                                                          #
@@ -191,17 +201,17 @@ function process_arguments()
 # are less than 8 supported colours.                                               #
 #                                                                                  #
 # Variables intentionally not defined 'local' as we want them to be global.        #
-#                                                                                  #
-# NOTE: Do NOT use show_error for the error messages are it requires colour!       #
 # -------------------------------------------------------------------------------- #
 
-function check_colours()
+function init_colours()
 {
     local ncolors
 
-    red=''
-    yellow=''
-    green=''
+    fgRed=''
+    fgGreen=''
+    fgYellow=''
+    fgCyan=''
+    bold=''
     reset=''
 
     if [[ "${USE_COLOURS}" = false ]]; then
@@ -226,50 +236,94 @@ function check_colours()
         return
     fi
 
-    red=$(tput setaf 1)
-    yellow=$(tput setaf 3)
-    green=$(tput setaf 2)
+    fgRed=$(tput setaf 1)
+    fgGreen=$(tput setaf 2)
+    fgYellow=$(tput setaf 3)
+    fgCyan=$(tput setaf 6)
+
+    bold=$(tput bold)
     reset=$(tput sgr0)
 }
 
 # -------------------------------------------------------------------------------- #
-# Show Error                                                                       #
+# Error                                                                            #
 # -------------------------------------------------------------------------------- #
 # A simple wrapper function to show something was an error.                        #
 # -------------------------------------------------------------------------------- #
 
-function show_error()
+function error()
 {
-    if [[ -n $1 ]]; then
-        printf '%s%s%s\n' "${red}" "${*}" "${reset}" 1>&2
-    fi
+    notify 'error' "${@}"
 }
 
 # -------------------------------------------------------------------------------- #
-# Show Warning                                                                     #
+# Warning                                                                          #
 # -------------------------------------------------------------------------------- #
 # A simple wrapper function to show something was a warning.                       #
 # -------------------------------------------------------------------------------- #
 
-function show_warning()
+function warn()
 {
-    if [[ -n $1 ]]; then
-        printf '%s%s%s\n' "${yellow}" "${*}" "${reset}" 1>&2
-    fi
+    notify 'warning' "${@}"
 }
 
 # -------------------------------------------------------------------------------- #
-# Show Success                                                                     #
+# Success                                                                          #
 # -------------------------------------------------------------------------------- #
 # A simple wrapper function to show something was a success.                       #
 # -------------------------------------------------------------------------------- #
 
-function show_success()
+function success()
 {
-    if [[ -n $1 ]]; then
-        printf '%s%s%s\n' "${green}" "${*}" "${reset}" 1>&2
+    notify 'success' "${@}"
+}
+
+# -------------------------------------------------------------------------------- #
+# Info                                                                             #
+# -------------------------------------------------------------------------------- #
+# A simple wrapper function to show something is information.                      #
+# -------------------------------------------------------------------------------- #
+
+function info()
+{
+    notify 'info' "${@}"
+}
+
+# -------------------------------------------------------------------------------- #
+# Notify                                                                           #
+# -------------------------------------------------------------------------------- #
+# Handle all types of notification in one place.                                   #
+# -------------------------------------------------------------------------------- #
+
+function notify()
+{
+    local type="${1:-}"
+    shift
+    local message="${*:-}"
+    local fgColor
+
+    if [[ -n $message ]]; then
+        case "${type}" in
+            error)
+                fgColor="${fgRed}";
+                ;;
+            warning)
+                fgColor="${fgYellow}";
+                ;;
+            success)
+                fgColor="${fgGreen}";
+                ;;
+            info)
+                fgColor="${fgCyan}";
+                ;;
+            *)
+                fgColor='';
+                ;;
+        esac
+        printf '%s%b%s\n' "${fgColor}${bold}" "${message}" "${reset}" 1>&2
     fi
 }
+
 
 # -------------------------------------------------------------------------------- #
 # Draw Header                                                                      #
@@ -283,7 +337,7 @@ function draw_header
 
         local config_string_raw config_string
         config_string_raw="Config File: $(basename "${CONFIG_FILE}")  Grabber Script: $(basename "${GRABBER_SCRIPT}")  Docker Container: ${OSNAME}:${TAGNAME}  Shell: ${SHELLNAME}"
-        config_string="${green}Config File:${reset} $(basename "${CONFIG_FILE}")  ${green}Grabber Script:${reset} $(basename "${GRABBER_SCRIPT}")  ${green}Docker Container:${reset} ${OSNAME}:${TAGNAME}  ${green}Shell:${reset} ${SHELLNAME}"
+        config_string="${fgGreen}Config File:${reset} $(basename "${CONFIG_FILE}")  ${fgGreen}Grabber Script:${reset} $(basename "${GRABBER_SCRIPT}")  ${fgGreen}Docker Container:${reset} ${OSNAME}:${TAGNAME}  ${fgGreen}Shell:${reset} ${SHELLNAME}"
 
         draw_line
         center_text "Package version grabber by Wolf Software Limited"
@@ -359,13 +413,13 @@ function check_prereqs()
     do
         command=$(command -v "${i}" || true)
         if [[ -z $command ]]; then
-            show_error "$i is not in your command path"
+            error "$i is not in your command path"
             error_count=$((error_count+1))
         fi
     done
 
     if [[ $error_count -gt 0 ]]; then
-        show_error "$error_count errors located - fix before re-running";
+        error "$error_count errors located - fix before re-running";
         clean_exit 1;
     fi
 }
@@ -380,9 +434,33 @@ function clean_exit()
 {
     if [[ -n ${2:-} ]];
     then
-        show_error "${2}"
+        error "${2}"
     fi
     exit "${1:-0}"
+}
+
+# -------------------------------------------------------------------------------- #
+# Enable strict mode                                                               #
+# -------------------------------------------------------------------------------- #
+# errexit = Any expression that exits with a non-zero exit code terminates         #
+# execution of the script, and the exit code of the expression becomes the exit    #
+# code of the script.                                                              #
+#                                                                                  #
+# pipefail = This setting prevents errors in a pipeline from being masked. If any  #
+# command in a pipeline fails, that return code will be used as the return code of #
+# the whole pipeline. By default, the pipeline's return code is that of the last   #
+# command - even if it succeeds.                                                   #
+#                                                                                  #
+# noclobber = Prevents files from being overwritten when redirected (>|).          #
+#                                                                                  #
+# nounset = Any reference to any variable that hasn't previously defined, with the #
+# exceptions of $* and $@ is an error, and causes the program to immediately exit. #
+# -------------------------------------------------------------------------------- #
+
+function set_strict_mode()
+{
+    set -o errexit -o noclobber -o nounset -o pipefail
+    IFS=$'\n\t'
 }
 
 # -------------------------------------------------------------------------------- #
@@ -393,7 +471,8 @@ function clean_exit()
 
 function main()
 {
-    check_colours
+    set_strict_mode
+    init_colours
     check_prereqs
     process_arguments "${@}"
 }

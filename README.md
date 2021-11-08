@@ -59,14 +59,14 @@ It works by starting the required docker container and executing the [version gr
 
 ```shell
   Usage: get-versions.sh [ -hd ] [ -p ] [ -c value ] [ -g value ] [ -o value ] [ -s value ] [ -t value ]
-    -h    : Print this screen
-    -d    : Enable debugging (set -x)
-    -p    : Package list only (No headers or other information)
-    -c    : config file name (including path)
-    -g    : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
-    -o    : which operating system to use (docker container)
-    -s    : which shell to use inside the container [Default: bash]
-    -t    : which tag to use [Default: latest]
+    -h | --help     : Print this screen
+    -d | --debug    : Enable debugging (set -x)
+    -p | --package  : Package list only (No headers or other information)
+    -c | --config   : config file name (including path)
+    -g | --grabber  : version grabber script (including path) [Default: ~/bin/version-grabber.sh]
+    -o | --os       : which operating system to use (docker container)
+    -s | --shell    : which shell to use inside the container [Default: bash]
+    -t | --tag      : which tag to use [Default: latest]
 ```
 
 > Unless you have a specific reason to, we suggest you stick to using our supplied [version grabber](src/version-grabber.sh) script. The version grabber needs to be shell agnostic and process each package management output correctly.
