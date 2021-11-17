@@ -3,7 +3,7 @@
         <img src="https://cdn.wolfsoftware.com/assets/images/github/organisations/dockertoolbox/black-and-white-circle-256.png" alt="DockerToolbox logo" />
     </a>
     <br />
-    <a href="https://github.com/DockerToolbox/version-helper/actions/workflows/pipeline.yml">
+    <a href="https://github.com/DockerToolbox/version-helper/actions/workflows/ci.yml">
         <img src="https://img.shields.io/github/workflow/status/DockerToolbox/version-helper/pipeline/master?style=for-the-badge" alt="Github Build Status">
     </a>
     <a href="https://github.com/DockerToolbox/version-helper/releases/latest">
