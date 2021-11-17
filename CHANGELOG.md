@@ -9,6 +9,8 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 - Updated [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
 
+- Updated [`[b231a7e]`](https://github.com/DockerToolbox/version-helper/commit/b231a7e7b011a6d7be955c71a495097f5ba8fbf4)
+
 - Cache build should always happen [`[a32c2a2]`](https://github.com/DockerToolbox/version-helper/commit/a32c2a21fe6bb1a288df466090073f6e4f7825c5)
 
 - Add long parameter names [`[35d0f34]`](https://github.com/DockerToolbox/version-helper/commit/35d0f3446acac3759e859e1d06607f2321422863)

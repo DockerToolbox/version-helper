@@ -77,14 +77,14 @@ We recommend copying the [get-versions.sh](src/get-versions.sh) and the [version
 
 ### Alpine Latest (example)
 
-```shell
+```
 get-versions.sh -c ../config/config.example -g version-grabber.sh -o alpine -s ash
 ```
 > With Alpine we need to set the shell to ash (alpine doesn't have bash by default)
 
 ### Debian stretch (example)
 
-```shell
+```
 get-versions.sh -c ../config/config.example -g version-grabber.sh -o debian -t stretch
 ```
 > The tag names reflect the tags used by the docker container, if you are unsure what tags there are then have a lot of at the relevant contains on [Docker Hub](https://hub.docker.com/).
@@ -158,7 +158,7 @@ The output is a [hadolint](https://github.com/CICDToolbox/hadolint) compliant pi
 
 ### Alpine
 
-```shell
+```
 apk update && \
 apk add --no-cache \
 	bash=5.1.4-r0 \
@@ -171,7 +171,7 @@ apk add --no-cache \
 
 ### Amazon Linux
 
-```shell
+```
 yum makecache && \
 yum install -y \
 	bash-4.2.46 \
@@ -184,7 +184,7 @@ yum install -y \
 
 ### Arch Linux
 
-```shell
+```
 pacman -Syu --noconfirm && \
 pacman -S --noconfirm \
 	bash=5.1.008-1 \
@@ -196,7 +196,7 @@ pacman -S --noconfirm \
 
 ### Centos
 
-```shell
+```
 yum makecache && \
 yum install -y \
 	bash-4.4.19 \
@@ -209,7 +209,7 @@ yum install -y \
 
 ### Debian
 
-```shell
+```
 apt-get update && \
 apt-get -y --no-install-recommends install \
 	bash=5.1-2+b3 \
@@ -276,7 +276,7 @@ yum install -y \
 
 ### Ubuntu
 
-```shell
+```
 apt-get update && \
 apt-get -y --no-install-recommends install \
 	bash=5.0-6ubuntu1.1 \
@@ -292,7 +292,7 @@ The following is a demonstration of the output from 4 different versions of the 
 
 **Ubuntu 14.04**
 
-```shell
+```
 get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 14.04
 
 apt-get update && \
@@ -307,7 +307,7 @@ apt-get -y --no-install-recommends install \
 
 **Ubuntu 16.04**
 
-```shell
+```
 get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 16.04
 
 apt-get update && \
@@ -322,7 +322,7 @@ apt-get -y --no-install-recommends install \
 
 **Ubuntu 18.04**
 
-```shell
+```
 get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 18.04
 
 apt-get update && \
@@ -337,7 +337,7 @@ apt-get -y --no-install-recommends install \
 
 **Ubuntu 20.04**
 
-```shell
+```
 get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 20.04
 
 apt-get update && \
