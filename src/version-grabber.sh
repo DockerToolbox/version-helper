@@ -4,11 +4,21 @@
 # Description                                                                      #
 # -------------------------------------------------------------------------------- #
 # This script will attempt to get the version information for specific packages.   #
-# The aim is to make it work in multiples, currently tested in Bash and Ash.       #
+# The aim is to make it work in multiples OSs, Shells and Package managers.        #
 #                                                                                  #
 # It will display ready to use config that can be added directly into a Dockerfile #
 # and meets the current hadolint specifications.                                   #
 # -------------------------------------------------------------------------------- #
+
+# -------------------------------------------------------------------------------- #
+# Global Variables                                                                 #
+# -------------------------------------------------------------------------------- #
+# Global variables that we use throughout the script.                              #
+# -------------------------------------------------------------------------------- #
+
+CRLF='\\\\\n'
+TAB1='\t'
+TAB2='\t\t'
 
 # -------------------------------------------------------------------------------- #
 # Get apk versions                                                                 #
@@ -23,25 +33,25 @@ function get_apk_versions()
     local output=''
     local IFS=' '
 
-    output="${output}\tapk update && \\\\\n"
+    output="${output}${TAB1}apk update && ${CRLF}"
     if [[ -n "${packages}" ]]; then
-        output="${output}\tapk add --no-cache \\\\\n"
+        output="${output}${TAB1}apk add --no-cache ${CRLF}"
 
         for package in $packages; do
             version=$(apk policy "${package}" 2>/dev/null | sed -n 2p | sed 's/:$//g' | sed 's/^[[:space:]]*//' || true)
             if [[ -n "${version}" ]]; then
-                output="${output}\\t\t$package=$version \\\\\n"
+                output="${output}${TAB2}$package=$version ${CRLF}"
             fi
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
 
     if [[ -n "${virtual_packages}" ]]; then
-        output="${output}\tapk add --no-cache --virtual \\\\\n"
+        output="${output}${TAB1}apk add --no-cache --virtual ${CRLF}"
         for package in $virtual_packages; do
-            output="${output}\t\t$package \\\\\n"
+            output="${output}${TAB2}$package ${CRLF}"
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
     echo -e "${output}"
 }
@@ -58,19 +68,19 @@ function get_apt_versions()
     local output=''
     local IFS=' '
 
-    output="${output}\tapt-get update && \\\\\n"
+    output="${output}${TAB1}apt-get update && ${CRLF}"
 
     packages=$(clean_string "${packages}")
     if [[ -n "${packages}" ]]; then
-        output="${output}\tapt-get -y --no-install-recommends install \\\\\n"
+        output="${output}${TAB1}apt-get -y --no-install-recommends install ${CRLF}"
 
        for package in $packages; do
             version=$(apt-cache policy "${package}" 2>/dev/null | grep 'Candidate:' | awk -F ' ' '{print $2}' || true)
             if [[ -n "${version}" ]]; then
-                output="${output}\t\t$package=$version \\\\\n"
+                output="${output}${TAB2}$package=$version ${CRLF}"
             fi
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
     echo -e "${output}"
 }
@@ -88,20 +98,20 @@ function get_microdnf_versions()
     local output=''
     local IFS=' '
 
-    output="${output}\tmicrodnf update && \\\\\n"
-    output="${output}\tmicrodnf install yum && \\\\\n"
-    output="${output}\tyum makecache && \\\\\n"
+    output="${output}${TAB1}microdnf update && ${CRLF}"
+    output="${output}${TAB1}microdnf install yum && ${CRLF}"
+    output="${output}${TAB1}yum makecache && ${CRLF}"
 
     if [[ -n "${packages}" ]]; then
-        output="${output}\tyum install -y \\\\\n"
+        output="${output}${TAB1}yum install -y ${CRLF}"
 
         for package in $packages; do
             version=$(yum info "${package}" 2>/dev/null | grep '^Version' | head -n 1 | awk -F ' : ' '{print $2}' || true)
             if [[ -n "${version}" ]]; then
-                output="${output}\t\t$package-$version \\\\\n"
+                output="${output}${TAB2}$package-$version ${CRLF}"
             fi
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
     if [[ -n "${group_list}" ]]; then
         #
@@ -109,12 +119,12 @@ function get_microdnf_versions()
         #
         declare -a "groups=($( echo "$group_list" | sed 's/[][`~!@#$%^&*():;<>.,?/\|{}=+-]/\\&/g' ))"
 
-        output="${output}\tyum groupinstall -y \\\\\n"
+        output="${output}${TAB1}yum groupinstall -y ${CRLF}"
         # shellcheck disable=SC2154
         for group in "${groups[@]}"; do
-            output="${output}\t\t\"$group\" \\\\\n"
+            output="${output}${TAB2}\"$group\" ${CRLF}"
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
     echo -e "${output}"
 }
@@ -131,17 +141,17 @@ function get_pacman_versions()
     local output=''
     local IFS=' '
 
-    output="${output}\tpacman -Syu --noconfirm && \\\\\n"
+    output="${output}${TAB1}pacman -Syu --noconfirm && ${CRLF}"
     if [[ -n "${packages}" ]]; then
-        output="${output}\tpacman -S --noconfirm \\\\\n"
+        output="${output}${TAB1}pacman -S --noconfirm ${CRLF}"
 
         for package in $packages; do
             version=$(pacman -Si "${package}" 2>/dev/null | grep 'Version' | awk -F ' ' '{print $3}' || true)
             if [[ -n "${version}" ]]; then
-                output="${output}\t\t$package=$version \\\\\n"
+                output="${output}${TAB2}$package=$version ${CRLF}"
             fi
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
     echo -e "${output}"
 }
@@ -158,17 +168,17 @@ function get_tdnf_versions()
     local output=''
     local IFS=' '
 
-    output="${output}\ttdnf makecache && \\\\\n"
+    output="${output}${TAB1}tdnf makecache && ${CRLF}"
     if [[ -n "${packages}" ]]; then
-        output="${output}\ttdnf install -y \\\\\n"
+        output="${output}${TAB1}tdnf install -y ${CRLF}"
 
         for package in $packages; do
             version=$(tdnf info "${package}" 2>/dev/null | grep '^Version' | head -n 1 | awk -F ' : ' '{print $2}' || true)
             if [[ -n "${version}" ]]; then
-                output="${output}\t\t$package-$version \\\\\n"
+                output="${output}${TAB2}$package-$version ${CRLF}"
             fi
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
     echo -e "${output}"
 }
@@ -186,17 +196,17 @@ function get_yum_versions()
     local output=''
     local IFS=' '
 
-    output="${output}\tyum makecache && \\\\\n"
+    output="${output}${TAB1}yum makecache && ${CRLF}"
     if [[ -n "${packages}" ]]; then
-        output="${output}\tyum install -y \\\\\n"
+        output="${output}${TAB1}yum install -y ${CRLF}"
 
         for package in ${packages}; do
             version=$(yum info "${package}" 2>/dev/null | grep '^Version' | head -n 1 | awk -F ' : ' '{print $2}' || true)
             if [[ -n "${version}" ]]; then
-                output="${output}\t\t$package-$version \\\\\n"
+                output="${output}${TAB2}$package-$version ${CRLF}"
             fi
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
 
     if [[ -n "${group_list}" ]]; then
@@ -205,12 +215,12 @@ function get_yum_versions()
         #
         declare -a "groups=($( echo "$group_list" | sed 's/[][`~!@#$%^&*():;<>.,?/\|{}=+-]/\\&/g' ))"
 
-        output="${output}\tyum groupinstall -y \\\\\n"
+        output="${output}${TAB1}yum groupinstall -y ${CRLF}"
         # shellcheck disable=SC2154
         for group in "${groups[@]}"; do
-            output="${output}\t\t\"$group\" \\\\\n"
+            output="${output}${TAB2}\"$group\" ${CRLF}"
         done
-        output="${output}\t\t&& \\\\\n"
+        output="${output}${TAB2}&& ${CRLF}"
     fi
     echo -e "${output}"
 }

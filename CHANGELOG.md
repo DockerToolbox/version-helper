@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.2...HEAD)
 
-- Cache build should always happen [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- Updated [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+- Cache build should always happen [`[a32c2a2]`](https://github.com/DockerToolbox/version-helper/commit/a32c2a21fe6bb1a288df466090073f6e4f7825c5)
 
 - Add long parameter names [`[35d0f34]`](https://github.com/DockerToolbox/version-helper/commit/35d0f3446acac3759e859e1d06607f2321422863)
 

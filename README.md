@@ -55,6 +55,10 @@ It works by starting the required docker container and executing the [version gr
 | Scientific Linux | 7                            | [Official Image](https://hub.docker.com/_/sl)          |
 | Ubuntu           | 14.04, 16.04, 18.04 & 20.04  | [Official Image](https://hub.docker.com/_/ubuntu)      |
 
+## Installation
+
+We recommend copying the [get-versions.sh](src/get-versions.sh) and the [version-grabber.sh](src/version-grabber.sh) into your ~/bin directory so that you can execute them from anywhere.
+
 ## Usage
 
 ```shell
@@ -74,14 +78,14 @@ It works by starting the required docker container and executing the [version gr
 ### Alpine Latest (example)
 
 ```shell
-./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o alpine -s ash
+get-versions.sh -c ../config/config.example -g version-grabber.sh -o alpine -s ash
 ```
 > With Alpine we need to set the shell to ash (alpine doesn't have bash by default)
 
 ### Debian stretch (example)
 
 ```shell
-./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o debian -t stretch
+get-versions.sh -c ../config/config.example -g version-grabber.sh -o debian -t stretch
 ```
 > The tag names reflect the tags used by the docker container, if you are unsure what tags there are then have a lot of at the relevant contains on [Docker Hub](https://hub.docker.com/).
 
@@ -92,10 +96,6 @@ The [get-versions](src/get-versions.sh) script takes all of the input from the c
 ```shell
 docker run --rm -v "${GRABBER_SCRIPT}":/version-grabber --env-file="${CONFIG_FILE}" "${OSNAME}":"${TAGNAME}" "${SHELLNAME}" /version-grabber
 ```
-
-## Installation
-
-We recommend copying the [get-versions.sh](src/get-versions.sh) and the [version-grabber.sh](src/version-grabber.sh) into your ~/bin directory so that you can execute them from anywhere.
 
 ## Packages Configuration
 
@@ -286,15 +286,6 @@ apt-get -y --no-install-recommends install \
 	wget=1.20.3-1ubuntu1 \
 	&& \
 ```
-
-### No Packages
-
-If no valid packages are found then the version grabber will return only a comment which will notify you of this but also not break the container.
-
-```
-# No packages identified
-```
-
 ### Comparing different versions of the same operating system
 
 The following is a demonstration of the output from 4 different versions of the same operating system (Ubuntu), just to demonstrate the results.
@@ -302,7 +293,7 @@ The following is a demonstration of the output from 4 different versions of the 
 **Ubuntu 14.04**
 
 ```shell
-./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 14.04
+get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 14.04
 
 apt-get update && \
 apt-get -y --no-install-recommends install \
@@ -317,7 +308,7 @@ apt-get -y --no-install-recommends install \
 **Ubuntu 16.04**
 
 ```shell
-./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 16.04
+get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 16.04
 
 apt-get update && \
 apt-get -y --no-install-recommends install \
@@ -332,7 +323,7 @@ apt-get -y --no-install-recommends install \
 **Ubuntu 18.04**
 
 ```shell
-./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 18.04
+get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 18.04
 
 apt-get update && \
 apt-get -y --no-install-recommends install \
@@ -347,7 +338,7 @@ apt-get -y --no-install-recommends install \
 **Ubuntu 20.04**
 
 ```shell
-./get-versions.sh -c ../config/config.example -g ./version-grabber.sh -o ubuntu -t 20.04
+get-versions.sh -c ../config/config.example -g version-grabber.sh -o ubuntu -t 20.04
 
 apt-get update && \
 apt-get -y --no-install-recommends install \

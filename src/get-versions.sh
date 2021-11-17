@@ -28,6 +28,7 @@ PREREQ_COMMANDS=( "docker" )
 NO_HEADERS=false                 # Shouold we hide the header / footer?
 USE_COLOURS=true                 # Should we use colours in our output ?
 FORCE_TERMINAL=true              # Force terminal type if requied
+TERMINAL_TYPE=xterm              # What terminal should we force?
 WIDTH=128                        # Force terminal width
 
 # -------------------------------------------------------------------------------- #
@@ -220,7 +221,7 @@ function init_colours()
 
     if ! test -t 1; then
         if [[ "${FORCE_TERMINAL}" = true ]]; then
-            export TERM=xterm
+            export TERM=${TERMINAL_TYPE}
         else
             return
         fi
@@ -413,7 +414,7 @@ function check_prereqs()
     do
         command=$(command -v "${i}" || true)
         if [[ -z $command ]]; then
-            error "$i is not in your command path"
+            warning "$i is not in your command path"
             error_count=$((error_count+1))
         fi
     done
@@ -432,10 +433,8 @@ function check_prereqs()
 
 function clean_exit()
 {
-    if [[ -n ${2:-} ]];
-    then
-        error "${2}"
-    fi
+    [[ -n ${2:-} ]] && error "${2}"
+    
     exit "${1:-0}"
 }
 
