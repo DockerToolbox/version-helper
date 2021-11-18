@@ -4,7 +4,7 @@
     </a>
     <br />
     <a href="https://github.com/DockerToolbox/version-helper/actions/workflows/ci.yml">
-        <img src="https://img.shields.io/github/workflow/status/DockerToolbox/version-helper/pipeline/master?style=for-the-badge" alt="Github Build Status">
+        <img src="https://img.shields.io/github/workflow/status/DockerToolbox/version-helper/ci/master?style=for-the-badge" alt="Github Build Status">
     </a>
     <a href="https://github.com/DockerToolbox/version-helper/releases/latest">
         <img src="https://img.shields.io/github/v/release/DockerToolbox/version-helper?color=blue&label=Latest%20Release&style=for-the-badge" alt="Release">
