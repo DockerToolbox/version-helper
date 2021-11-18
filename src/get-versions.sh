@@ -29,7 +29,8 @@ NO_HEADERS=false                 # Shouold we hide the header / footer?
 USE_COLOURS=true                 # Should we use colours in our output ?
 FORCE_TERMINAL=true              # Force terminal type if requied
 TERMINAL_TYPE=xterm              # What terminal should we force?
-WIDTH=128                        # Force terminal width
+DEFAULT_SCREEN_WIDTH=128         # Default width to use
+DYNAMIC_SCREEN_WIDTH=false       # Should we find the width dynamically?
 
 # -------------------------------------------------------------------------------- #
 # The wrapper function                                                             #
@@ -214,6 +215,7 @@ function init_colours()
     fgCyan=''
     bold=''
     reset=''
+    screen_width=${DEFAULT_SCREEN_WIDTH}
 
     if [[ "${USE_COLOURS}" = false ]]; then
         return
@@ -244,6 +246,9 @@ function init_colours()
 
     bold=$(tput bold)
     reset=$(tput sgr0)
+    if [[ "${DYNAMIC_SCREEN_WIDTH}" = true ]]; then
+        screen_width=$(tput cols)
+    fi
 }
 
 # -------------------------------------------------------------------------------- #
@@ -374,7 +379,7 @@ function center_text()
         textsize=${#1}
         extra=0
     fi
-    span=$(( ( (WIDTH + textsize) / 2) + extra ))
+    span=$(( ( (screen_width + textsize) / 2) + extra ))
 
     printf '%*s\n' "${span}" "$1"
 }
@@ -391,11 +396,11 @@ function draw_line()
 
         local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq'
 
-        while ((${#line} < "${WIDTH}"));
+        while ((${#line} < screen_width));
         do
             line+="$line";
         done
-        printf '%s%s%s\n' "$start" "${line:0:WIDTH}" "$end"
+        printf '%s%s%s\n' "$start" "${line:0:screen_width}" "$end"
     fi
 }
 

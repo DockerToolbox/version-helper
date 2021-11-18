@@ -16,7 +16,7 @@
 # Global variables that we use throughout the script.                              #
 # -------------------------------------------------------------------------------- #
 
-CRLF='\\\\\n'
+CRLF='\\\n'
 TAB1='\t'
 TAB2='\t\t'
 
