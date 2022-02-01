@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 
 This changelog was automatically generated using [Caretaker](https://github.com/DevelopersToolbox/caretaker) by [Wolf Software](https://github.com/WolfSoftware)
 
-### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.2...HEAD)
+### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.3...HEAD)
 
-- Added rockylinux support [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- Added Alma Linux Support [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+### [v0.1.2](https://github.com/DockerToolbox/version-helper/compare/v0.1.1...v0.1.2)
+
+> Released on February, 1st 2022
+
+- Added rockylinux support [`[a6a457e]`](https://github.com/DockerToolbox/version-helper/commit/a6a457e3c1410d23cc2883acc48ebb3913ccdbef)
 
 - Updated [`[aa672f3]`](https://github.com/DockerToolbox/version-helper/commit/aa672f3ef6a7a8fe3132bdf01fa0ae701a21f5b1)
 

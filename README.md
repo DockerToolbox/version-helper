@@ -45,6 +45,7 @@ It works by starting the required docker container and executing the [version gr
 
 | Operating System | Versions                     | Docker Hub                                             |
 | ---------------- | ---------------------------- | ------------------------------------------------------ |
+| Alma Linux       | 8                            | [Official Image](https://hub.docker.com/_/almalinux)   |
 | Alpine           | 3.11, 3.12, 3.13 & 3.14      | [Official Image](https://hub.docker.com/_/alpine)      |
 | Amazon Linux     | 1 & 2                        | [Official Image](https://hub.docker.com/_/amazonlinux) |
 | Arch Linux       | base                         | [Official Image](https://hub.docker.com/_/archlinux)   |
@@ -116,7 +117,7 @@ APK_VIRTUAL_PACKAGE=            # Alpine Virtual Packages (These are not version
 APT_PACKAGES=                   # Debian / Ubuntu Packages
 PACMAN_PACKAGES=                # Arch Linux
 TDNF_PACKAGES=                  # Photon Packages
-YUM_PACKAGES=                   # Amazon Linux / Centos / Oracle Linux / Rocky Linux / Scientific Linux
+YUM_PACKAGES=                   # Alma Linux / Amazon Linux / Centos / Oracle Linux / Rocky Linux / Scientific Linux
 YUM_GROUPS=                     # Yum Groups
 ```
 > Oracle Linux 8 slim comes with `microdnf` instead of `yum` but we simply install yum using `microdnf` and then carry on as normal.
@@ -125,6 +126,8 @@ YUM_GROUPS=                     # Yum Groups
 
 ```
 DISCOVER_BY=OS                  # Use Operating System ID instead of package manager
+ALMA_PACKAGES=                  # Alma Linux Packages
+ALMA_GROUPS=                    # Alma Linux Groups
 ALPINE_PACKAGES=                # Alpine Packages
 ALPINE_VIRTUAL_PACKAGES=        # Alpine Virtual Packages (These are not versioned)
 AMAZON_PACKAGES=                # Amazon Linux Packages
@@ -158,6 +161,19 @@ One key thing to note is that we do not output RUN before the package installati
 The output is a [hadolint](https://github.com/CICDToolbox/hadolint) compliant piece of code that you can add directly to your Dockerfile.
 
 > If no version can be found then the package is omitted from the list.
+
+### Alma Linux
+
+```
+yum makecache && \
+yum install -y \
+	bash-4.4.20 \
+	curl-7.61.1 \
+	git-2.27.0 \
+	openssl-devel-1.1.1k \
+	wget-1.19.5 \
+	&& \
+```
 
 ### Alpine
 

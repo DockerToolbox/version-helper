@@ -297,6 +297,10 @@ function discover_by_operating_system
 
     os_name=$(detect_distribution)
     case "${os_name}" in
+        # Alma Linux (almalinux)
+        almalinux)
+            get_yum_versions "${ALMA_PACKAGES:-}" "${ALMA_GROUPS:-}"
+            ;;
         # Alpine Linux (alpine)
         alpine)
             get_apk_versions "${ALPINE_PACKAGES:-}" "${ALPINE_VIRTUAL_PACKAGES:-}"
@@ -309,7 +313,7 @@ function discover_by_operating_system
         arch)
             get_pacman_versions "${ARCH_PACKAGES:-}"
             ;;
-        # Centos (Centos)
+        # Centos (centos)
         centos)
             get_yum_versions "${CENTOS_PACKAGES:-}" "${CENTOS_GROUPS:-}"
             ;;
@@ -325,7 +329,7 @@ function discover_by_operating_system
         photon)
             get_tdnf_versions "${PHOTON_PACKAGES:-}"
             ;;
-        # Photon (photon)
+        # Rocky Linux (rocky)
         rocky)
             get_yum_versions "${ROCKY_PACKAGES:-}" "${ROCKY_GROUPS:-}"
             ;;
