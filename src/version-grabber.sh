@@ -325,6 +325,10 @@ function discover_by_operating_system
         photon)
             get_tdnf_versions "${PHOTON_PACKAGES:-}"
             ;;
+        # Photon (photon)
+        rocky)
+            get_yum_versions "${ROCKY_PACKAGES:-}" "${ROCKY_GROUPS:-}"
+            ;;
         # Scientific Linux (sl)
         scientific)
             get_yum_versions "${SCIENTIFIC_PACKAGES:-}" "${SCIENTIFIC_GROUPS:-}"

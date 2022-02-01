@@ -52,6 +52,7 @@ It works by starting the required docker container and executing the [version gr
 | Debian           | 9, 10, 11 & 12 (full & slim) | [Official Image](https://hub.docker.com/_/debian)      |
 | Oracle Linux     | 6, 7 & 8 (full & slim)       | [Official Image](https://hub.docker.com/_/oraclelinux) |
 | Photon           | 1.0, 2.0, 3.0 & 4.0          | [Official Image](https://hub.docker.com/_/photon)      |
+| Rocky Linux      | 8                            | [Official Image](https://hub.docker.com/_/rockylinux)  |
 | Scientific Linux | 7                            | [Official Image](https://hub.docker.com/_/sl)          |
 | Ubuntu           | 14.04, 16.04, 18.04 & 20.04  | [Official Image](https://hub.docker.com/_/ubuntu)      |
 
@@ -115,7 +116,7 @@ APK_VIRTUAL_PACKAGE=            # Alpine Virtual Packages (These are not version
 APT_PACKAGES=                   # Debian / Ubuntu Packages
 PACMAN_PACKAGES=                # Arch Linux
 TDNF_PACKAGES=                  # Photon Packages
-YUM_PACKAGES=                   # Amazon Linux / Centos / Oracle Linux / Scientific Linux
+YUM_PACKAGES=                   # Amazon Linux / Centos / Oracle Linux / Rocky Linux / Scientific Linux
 YUM_GROUPS=                     # Yum Groups
 ```
 > Oracle Linux 8 slim comes with `microdnf` instead of `yum` but we simply install yum using `microdnf` and then carry on as normal.
@@ -135,6 +136,8 @@ DEBIAN_PACKAGES=                # Debian Packages
 ORACLE_PACKAGES=                # Oracle Linux Packages
 ORACLE_GROUPS=                  # Oracle Groups
 PHOTON_PACKAGES=                # Photon Linux Packages
+ROCKY_PACKAGES=                 # Rocky Linux Packages
+ROCKY_GROUPS=                   # Rocky Linux Groups
 SCIENTIFIC_PACKAGES=            # Scientific Linux Packages
 SCIENTIFIC_GROUPS=              # Scientific Linux Groups
 UBUNTU_PACKAGES=                # Ubuntu Packages
@@ -258,6 +261,19 @@ tdnf install -y \
 	curl-7.78.0 \
 	git-2.30.0 \
 	wget-1.20.3 \
+	&& \
+```
+
+### Rocky Linux
+
+```
+yum makecache && \
+yum install -y \
+	bash-4.4.20 \
+	curl-7.61.1 \
+	git-2.27.0 \
+	openssl-devel-1.1.1k \
+	wget-1.19.5 \
 	&& \
 ```
 

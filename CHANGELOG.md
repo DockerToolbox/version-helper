@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.2...HEAD)
 
-- Updated [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- Added rockylinux support [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+- Updated [`[aa672f3]`](https://github.com/DockerToolbox/version-helper/commit/aa672f3ef6a7a8fe3132bdf01fa0ae701a21f5b1)
 
 - Updated [`[2236d7d]`](https://github.com/DockerToolbox/version-helper/commit/2236d7db7ae03ba2a74cfe9b60eae24933961991)
 
