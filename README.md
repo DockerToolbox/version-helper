@@ -46,10 +46,10 @@ It works by starting the required docker container and executing the [version gr
 | Operating System | Versions                     | Docker Hub                                             |
 | ---------------- | ---------------------------- | ------------------------------------------------------ |
 | Alma Linux       | 8                            | [Official Image](https://hub.docker.com/_/almalinux)   |
-| Alpine           | 3.11, 3.12, 3.13 & 3.14      | [Official Image](https://hub.docker.com/_/alpine)      |
+| Alpine           | 3.12, 3.13 & 3.14            | [Official Image](https://hub.docker.com/_/alpine)      |
 | Amazon Linux     | 1 & 2                        | [Official Image](https://hub.docker.com/_/amazonlinux) |
 | Arch Linux       | base                         | [Official Image](https://hub.docker.com/_/archlinux)   |
-| Centos           | 7 & 8                        | [Official Image](https://hub.docker.com/_/centos)      |
+| Centos           | 7                            | [Official Image](https://hub.docker.com/_/centos)      |
 | Debian           | 9, 10, 11 & 12 (full & slim) | [Official Image](https://hub.docker.com/_/debian)      |
 | Oracle Linux     | 6, 7 & 8 (full & slim)       | [Official Image](https://hub.docker.com/_/oraclelinux) |
 | Photon           | 1.0, 2.0, 3.0 & 4.0          | [Official Image](https://hub.docker.com/_/photon)      |

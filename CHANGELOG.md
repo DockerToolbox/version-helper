@@ -5,9 +5,15 @@ All notable changes to this project will be documented in this file.
 
 This changelog was automatically generated using [Caretaker](https://github.com/DevelopersToolbox/caretaker) by [Wolf Software](https://github.com/WolfSoftware)
 
-### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.3...HEAD)
+### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.4...HEAD)
 
-- Added Alma Linux Support [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- Update readme [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+### [v0.1.3](https://github.com/DockerToolbox/version-helper/compare/v0.1.2...v0.1.3)
+
+> Released on February, 1st 2022
+
+- Added Alma Linux Support [`[c8ec22e]`](https://github.com/DockerToolbox/version-helper/commit/c8ec22e1c5c3ab0079e802bac4a33114f75ff218)
 
 ### [v0.1.2](https://github.com/DockerToolbox/version-helper/compare/v0.1.1...v0.1.2)
 
