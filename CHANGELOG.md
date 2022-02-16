@@ -9,6 +9,8 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 - Update readme [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
 
+- Update readme [`[42d5886]`](https://github.com/DockerToolbox/version-helper/commit/42d5886cd7a28d7489d94fb295d03470033ae6b1)
+
 ### [v0.1.3](https://github.com/DockerToolbox/version-helper/compare/v0.1.2...v0.1.3)
 
 > Released on February, 1st 2022
