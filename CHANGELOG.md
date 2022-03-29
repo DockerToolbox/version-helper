@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.4...HEAD)
 
-- Update [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- added 8-minimal [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+- Update [`[d6c5ddf]`](https://github.com/DockerToolbox/version-helper/commit/d6c5ddf5885c46f37d78afaf83da288033b95857)
 
 - Update readme [`[2705a90]`](https://github.com/DockerToolbox/version-helper/commit/2705a90eff5ef57f0f4a1d3e2d171a32944d2dc9)
 
