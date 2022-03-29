@@ -97,9 +97,12 @@ function get_microdnf_versions()
     local group_list="${2:-}"
     local output=''
     local IFS=' '
+    local yum_version=''
+
+    yum_version=$(microdnf repoquery yum | tail -n 1)
 
     output="${output}${TAB1}microdnf update && ${CRLF}"
-    output="${output}${TAB1}microdnf install yum && ${CRLF}"
+    output="${output}${TAB1}microdnf install -y ${yum_version} && ${CRLF}"
     output="${output}${TAB1}yum makecache && ${CRLF}"
 
     if [[ -n "${packages}" ]]; then
