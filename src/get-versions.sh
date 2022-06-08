@@ -167,9 +167,10 @@ function process_arguments()
     done
 
     [[ -z "${CONFIG_FILE}" ]] && usage
-    [[ -z "${GRABBER_SCRIPT}" ]] && GRABBER_SCRIPT="$(realpath ~/bin/version-grabber.sh)"
     [[ -z "${OSNAME}" ]] &&  usage
-
+    if [[ -z "${GRABBER_SCRIPT}" ]]; then
+        GRABBER_SCRIPT="$(realpath ~/bin/version-grabber.sh)"
+    fi
     SHELLNAME="${SHELLNAME:-bash}"
     TAGNAME="${TAGNAME:-latest}"
 

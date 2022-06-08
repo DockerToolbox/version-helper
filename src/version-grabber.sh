@@ -398,7 +398,7 @@ function force_update_and_install_of_prereqs
     elif command -v microdnf > /dev/null; then
        {
             microdnf update &&
-            microdnf install yum &&
+            microdnf install -y yum &&
             yum makecache
         } > /dev/null 2>&1 || true
     elif command -v pacman > /dev/null; then

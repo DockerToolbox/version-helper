@@ -7,7 +7,9 @@ This changelog was automatically generated using [Caretaker](https://github.com/
 
 ### [Unreleased](https://github.com/DockerToolbox/version-helper/compare/v0.1.4...HEAD)
 
-- added 8-minimal [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+- Fixed issue with microdnf [`[head]`](https://github.com/DockerToolbox/version-helper/commit/)
+
+- added 8-minimal [`[5f4aaf8]`](https://github.com/DockerToolbox/version-helper/commit/5f4aaf8377cf57a5d0eb0472422a5e5feaba37bf)
 
 - Update [`[d6c5ddf]`](https://github.com/DockerToolbox/version-helper/commit/d6c5ddf5885c46f37d78afaf83da288033b95857)
 
