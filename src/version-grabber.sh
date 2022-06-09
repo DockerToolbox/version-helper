@@ -101,7 +101,7 @@ function get_microdnf_versions()
 
     yum_version=$(microdnf repoquery yum | tail -n 1)
 
-    output="${output}${TAB1}microdnf update && ${CRLF}"
+    output="${output}${TAB1}microdnf -y update && ${CRLF}"
     output="${output}${TAB1}microdnf install -y ${yum_version} && ${CRLF}"
     output="${output}${TAB1}yum makecache && ${CRLF}"
 
@@ -397,7 +397,7 @@ function force_update_and_install_of_prereqs
         } > /dev/null 2>&1 || true
     elif command -v microdnf > /dev/null; then
        {
-            microdnf update &&
+            microdnf -y update &&
             microdnf install -y yum &&
             yum makecache
         } > /dev/null 2>&1 || true
